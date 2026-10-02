@@ -19,7 +19,7 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family
 .o .fc{width:54px;height:54px;margin:0 auto 2px;border-radius:50%;overflow:hidden;background:#0001}.fc img{width:100%;height:100%;object-fit:cover;display:block}.o .it{font-size:30px;line-height:1.2}
 .o button{width:100%;border:0;border-radius:10px;padding:5px;font:inherit;font-weight:800;background:#aaa;color:#fff}
 .o button.ok{background:var(--ok)}
-#bd{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;background:var(--board);padding:4px;border-radius:12px}
+#bd{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;background:var(--board);padding:4px;border-radius:12px}
 .c{aspect-ratio:1;background:var(--cell);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:clamp(22px,8vw,36px);position:relative;touch-action:none}
 .c.sel{outline:3px solid var(--gold)}
 .c.gen::after{content:"⚡";position:absolute;right:1px;bottom:0;font-size:12px}
@@ -83,7 +83,7 @@ nav button.on{background:var(--gold);color:#2a1a00}
 <div id="gh" hidden></div><div id="ts" hidden></div>
 <script>
 const $=id=>document.getElementById(id),rnd=n=>Math.floor(Math.random()*n);
-const C=7,R=7,CH={A:["🫓","🍞","🥖","🥪","🌮","🌯","🍕","🍔"],B:["🐚","🦐","🦀","🦞","🐟"],C:["🥤","🧋","☕️","🫖"],D:["🥧","🧁","🍰","🎂"],E:["🍦","🍧","🍨"],F:["🌭","🍗","🍖","🥩"]};
+const C=6,R=6,CH={A:["🫓","🍞","🥖","🥪","🌮","🌯","🍕","🍔"],B:["🐚","🦐","🦀","🦞","🐟"],C:["🥤","🧋","☕️","🫖"],D:["🥧","🧁","🍰","🎂"],E:["🍦","🍧","🍨"],F:["🌭","🍗","🍖","🥩"]};
 const GEN={G1:{e:"🧺",ch:"A",n:"Ekmek sepeti"},G2:{e:"🪣",ch:"B",n:"Balık kovası"},G3:{e:"🚰",ch:"C",n:"İçecek sebili"},G4:{e:"🥣",ch:"D",n:"Hamur kasesi"},G5:{e:"❄️",ch:"E",n:"Dondurma dolabı"},G6:{e:"🔥",ch:"F",n:"Izgara ocağı"}};
 const FA=["assets/characters/client_1.png","assets/characters/client_2.png","assets/characters/client_3.png","assets/characters/client_4.png"],TY={c:["🧹","Temizle"],o:["🔧","Onar"],y:["✨","Yenile"]};
 const MP=["assets/map/map.png","assets/map/map_1_restoran.webp","assets/map/map_2_sahilkafe.webp","assets/map/map_3_sahilmarket.webp","assets/map/map_4_oyunalani.webp","assets/map/map_5_limandeposu.webp","assets/map/map_6_sera.webp","assets/map/map_7_eskikonak.webp"];
@@ -129,8 +129,9 @@ function drawK(){
 function deliver(i){const o=cust[i],k=g.findIndex(t=>t&&t.ch==o.ch&&t.lv==o.lv);
  if(k<0){sayH("Panoda "+tl(o.ch,o.lv)+" yok. Aynı seviyeleri birleştir.");return}
  g[k]=null;S.coin+=o.coin;cust.splice(i,1);cust.splice(i,0,mk());say("Sipariş teslim edildi: +"+o.coin+" jeton. Haritada harca!");drawK()}
-function spawn(i){if(S.en<1){say("Enerjin bitti.");return}
- const f=g.map((x,k)=>x?-1:k).filter(k=>k>=0);if(!f.length){say("Pano dolu. Birleştirerek yer aç.");return}
+function spawn(i){const f=g.map((x,k)=>x?-1:k).filter(k=>k>=0);
+ if(!f.length){say("Hücreler doldu! Yeni ürün eklenemez, birleştirerek yer aç.");toast("Hücreler doldu!");return}
+ if(S.en<1){say("Enerjin bitti.");return}
  S.en--;g[f[rnd(f.length)]]={ch:GEN[g[i].gen].ch,lv:rnd(4)?0:1};drawK()}
 function drop(a,b){if(a==b)return;const x=g[a],y=g[b];if(!x||x.gen)return;
  if(!y){g[b]=x;g[a]=null}
