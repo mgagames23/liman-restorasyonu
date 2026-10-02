@@ -1,0 +1,8 @@
+{
+  "appId": "com.liman.restorasyonu",
+  "appName": "Liman Restorasyonu",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
