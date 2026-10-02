@@ -1,6 +1,6 @@
 {
-  "appId": "com.liman.restorasyonu",
-  "appName": "Liman Restorasyonu",
+  "appId": "com.matchandorder",
+  "appName": "Match and Order",
   "webDir": "www",
   "server": {
     "androidScheme": "https"
