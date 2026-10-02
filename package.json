@@ -1,8 +1,8 @@
 {
-  "name": "liman-restorasyonu",
+  "name": "matchandorder",
   "version": "1.0.0",
   "private": true,
-  "description": "Liman Restorasyonu - match/merge ve restorasyon oyunu",
+  "description": "Match and Order oyunu",
   "dependencies": {
     "@capacitor/android": "^8.0.0",
     "@capacitor/cli": "^8.0.0",
