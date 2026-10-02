@@ -66,17 +66,17 @@ jobs:
           ./gradlew assembleDebug
 
       - name: Rename APK
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk liman-restorasyonu.apk
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk Match and Order.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: liman-restorasyonu-apk
-          path: liman-restorasyonu.apk
+          name: Match and Order-apk
+          path: Match and Order.apk
 
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
           name: Build ${{ github.run_number }}
-          files: liman-restorasyonu.apk
+          files: Match and Order.apk
