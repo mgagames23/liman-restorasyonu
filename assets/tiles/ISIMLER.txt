@@ -1,0 +1,12 @@
+Bu klasore oyunun bekledigi tile gorsellerini bu adlarla (PNG, seffaf arka plan) koyun.
+Eksik dosya olursa oyun o tile icin emojiyle devam eder.
+Urun adi = dosya adi.
+
+Zincir A - fastfood (8, seviye sirasi): dough.png, halfofbread.png, bread.png, sandwich.png, taco.png, wrap.png, sliceofpizza.png, hamburger.png
+Zincir B - seafood (5, seviye sirasi): seashell.png, shrimp.png, crab.png, lobster.png, fish.png
+Zincir C - drinks (4, seviye sirasi): milkshake.png, bubbletea.png, coffee.png, tea.png
+Zincir D - dessert (4, seviye sirasi): pie.png, cupcake.png, cakeslice.png, birthdaycake.png
+Zincir E - icecream (3, seviye sirasi): icecreamcornet.png, onescoopinacup.png, triplescoopinacup.png
+Zincir F - grill (4, seviye sirasi): hotdog.png, chickendrumstick.png, meatonthebone.png, cutofmeat.png
+
+Uretici sepetler: fastfood.png, seafood.png, drinks.png, dessert.png, icecream.png, grill.png
