@@ -141,7 +141,7 @@ function drawK(){
  orb.scrollLeft=sl;$("en").textContent=S.en;$("co").textContent=S.coin;save()}
 function deliver(i){const o=cust[i],k=g.findIndex(t=>t&&t.ch==o.ch&&t.lv==o.lv);
  if(k<0){sayH("Panoda "+tl(o.ch,o.lv)+" yok. Aynı seviyeleri birleştir.");return}
- g[k]=null;S.coin+=o.coin;cust.splice(i,1);cust.splice(i,0,mk());say("Sipariş teslim edildi: +"+o.coin+" jeton. Haritada harca!");drawK()}
+ g[k]=null;snd("order");S.coin+=o.coin;cust.splice(i,1);cust.splice(i,0,mk());say("Sipariş teslim edildi: +"+o.coin+" jeton. Haritada harca!");drawK()}
 function spawn(i){const f=g.map((x,k)=>x?-1:k).filter(k=>k>=0);
  if(!f.length){say("Hücreler doldu! Yeni ürün eklenemez, birleştirerek yer aç.");toast("Hücreler doldu!");return}
  if(S.en<1){say("Enerjin bitti.");return}
@@ -225,7 +225,7 @@ function spin(){if(spinning||S.dr==day())return;spinning=true;
  w.style.transition="transform 5s cubic-bezier(.12,.55,.1,1)";w.style.transform="rotate("+(1800+360-(22.5+45*k)-(rnd(21)-10))+"deg)";
  setTimeout(()=>{nosnd("cark");snd("reward");spinning=false;$("drt").textContent="Kazandın: "+pz(p[0],p[1])+" + "+pz(p[2],p[3]);b.disabled=false;b.textContent="Yarın yine gel"},5200)}
 $("drb").onclick=()=>{if(S.dr==day()&&!spinning){$("dr").hidden=true;chkD()}else spin()};
-$("spb").onclick=()=>{started=true;$("sp").hidden=true;["cark","reward","match"].forEach(n=>{try{const a=SN[n]||(SN[n]=new Audio("assets/"+n+".mp3"));a.preload="auto";a.load()}catch(e){}});chkD()};
+$("spb").onclick=()=>{started=true;$("sp").hidden=true;["cark","reward","match","order"].forEach(n=>{try{const a=SN[n]||(SN[n]=new Audio("assets/"+n+".mp3"));a.preload="auto";a.load()}catch(e){}});chkD()};
 setInterval(chkD,10000);
 addEventListener("visibilitychange",()=>{if(document.hidden){save();nosnd("cark")}else chkD()});addEventListener("pagehide",save);
 drawK();setMap(false);
