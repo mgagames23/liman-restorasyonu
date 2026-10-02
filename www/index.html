@@ -73,6 +73,17 @@ nav button.on{background:var(--gold);color:#2a1a00}
 #gh .tl{width:52px;height:52px}
 #in .tl{width:28px;height:28px;display:inline-block;vertical-align:middle}
 #in b.cur{display:inline-block;border-radius:50%;background:#e0a21a55;box-shadow:0 0 0 2px var(--gold)}
+#sp{position:fixed;inset:0;z-index:30;background:#16384a url(assets/oyun.png) center/cover no-repeat;display:flex;align-items:flex-end;justify-content:center;padding-bottom:calc(12% + env(safe-area-inset-bottom,0px))}
+#spb,#drb{font:inherit;font-weight:800;font-size:22px;color:#3a2914;background:var(--gold);border:0;border-radius:30px;padding:12px 44px;box-shadow:0 4px 0 #a8730a,0 8px 18px #0006}
+#dr{position:fixed;inset:0;z-index:20;background:#000c;display:flex;align-items:center;justify-content:center;padding:8px}
+.db{display:flex;flex-direction:column;align-items:center;gap:8px;color:#fff}.db h2{margin:0}
+#wh{position:relative;width:min(94vw,56vh,520px);aspect-ratio:1;background:url(assets/daily_reward.png) center/100% 100% no-repeat;border-radius:18px;overflow:hidden}
+#wd{position:absolute;left:12.918%;top:15.789%;width:73.046%;height:73.046%;border-radius:50%;overflow:hidden}
+#wd .st{position:absolute;width:136.9%;left:-17.686%;top:-21.616%;aspect-ratio:1}
+#wd img{width:100%;display:block;pointer-events:none}
+#wd .pt{position:absolute;left:45.614%;top:15.629%;width:8.612%;height:8.134%;background:url(assets/daily_reward.png) 47.9% 88.02%/1161.1% 1229.4% no-repeat;transform:rotate(180deg)}
+#wh .pp{position:absolute;inset:0;background:url(assets/daily_reward.png) center/100% 100% no-repeat;clip-path:polygon(45.93% 15.47%,53.91% 15.47%,50.8% 21.69%,49.92% 23.21%,48.96% 21.69%);pointer-events:none}
+#drt{min-height:30px;font-weight:800;font-size:20px;text-align:center}#drb:disabled{opacity:.75}
 </style></head><body><div id="app">
 <div class="top"><div>⚡ <span id="en"></span></div><div>🪙 <span id="co"></span></div></div>
 <div class="scr" id="sk"><div id="or"></div><div id="bd"></div><div id="in">Eşyaları birleştir, müşterilerin siparişini teslim et, jeton kazan.</div></div>
@@ -81,6 +92,8 @@ nav button.on{background:var(--gold);color:#2a1a00}
 </div>
 <div id="md" hidden><div class="mb"><div id="mv"><img id="mi" alt=""><div id="gr"></div><img id="mr" alt=""><div id="gl"></div><div id="fx"></div></div><button class="x">✕</button><h2 id="mt"></h2><div class="bar"><i id="mbar"></i></div><div id="tk"></div></div></div>
 <div id="gh" hidden></div><div id="ts" hidden></div>
+<div id="sp"><button id="spb">Başlat</button></div>
+<div id="dr" hidden><div class="db"><h2>🎁 Günlük Ödül</h2><div id="wh"><div id="wd"><div class="st"><img src="assets/daily_reward.png" alt="" draggable="false"><div class="pt"></div></div></div><div class="pp"></div></div><div id="drt"></div><button id="drb">Ödülü Al</button></div></div>
 <script>
 const $=id=>document.getElementById(id),rnd=n=>Math.floor(Math.random()*n);
 const C=6,R=6,CH={A:["🫓","🍞","🥖","🥪","🌮","🌯","🍕","🍔"],B:["🐚","🦐","🦀","🦞","🐟"],C:["🥤","🧋","☕️","🫖"],D:["🥧","🧁","🍰","🎂"],E:["🍦","🍧","🍨"],F:["🌭","🍗","🍖","🥩"]};
@@ -99,10 +112,10 @@ const A=[
 let S={coin:60,en:50,done:Array(7).fill(0),g:null};
 try{const s=JSON.parse(localStorage.getItem("hr2"));if(s&&s.done&&s.g)S=s}catch(e){}
 if(!S.g){S.g=Array(C*R).fill(null);S.g[0]={gen:"G1"};S.g[1]={gen:"G2"};S.g[2]={gen:"G3"};S.g[3]={gen:"G4"};S.g[4]={gen:"G5"};S.g[5]={gen:"G6"};[[8,"A",0],[9,"A",0],[10,"B",0],[11,"B",0],[15,"A",1],[16,"B",1]].forEach(([i,c,l])=>S.g[i]={ch:c,lv:l})}
-const g=S.g;let sel=-1,cust=[],cur=0;
+const g=S.g;let sel=-1,cust=Array.isArray(S.cu)?S.cu.filter(o=>o&&CH[o.ch]&&o.lv<CH[o.ch].length&&FA.includes(o.f)&&o.coin>0).slice(0,4):[],cur=0,scr=S.sc=="h"?"h":"k";
 (function(){g.forEach((t,i)=>{if(t&&(t.gen?!GEN[t.gen]:(!CH[t.ch]||t.lv>=CH[t.ch].length)))g[i]=null});
  Object.keys(GEN).forEach(k=>{if(!g.some(t=>t&&t.gen==k)){let j=g.findIndex(t=>!t);if(j<0)j=g.findIndex(t=>t&&!t.gen);if(j>=0)g[j]={gen:k}}})})();
-const save=()=>{try{localStorage.setItem("hr2",JSON.stringify(S))}catch(e){}};
+const save=()=>{try{S.cu=cust;S.sc=scr;S.mo=$("md").hidden?-1:cur;localStorage.setItem("hr2",JSON.stringify(S))}catch(e){}};
 const len=i=>A[i].t.length,nd=()=>S.done.filter((n,i)=>n>=len(i)).length,open=i=>i==0||S.done[i-1]>=len(i-1);
 const cost=(i,k)=>Math.round((30+20*k)*(1+i*.5)/5)*5;
 const say=s=>$("in").textContent=s,sayH=s=>$("in").innerHTML=s;
@@ -135,7 +148,7 @@ function spawn(i){const f=g.map((x,k)=>x?-1:k).filter(k=>k>=0);
  S.en--;g[f[rnd(f.length)]]={ch:GEN[g[i].gen].ch,lv:rnd(4)?0:1};drawK()}
 function drop(a,b){if(a==b)return;const x=g[a],y=g[b];if(!x||x.gen)return;
  if(!y){g[b]=x;g[a]=null}
- else if(!y.gen&&x.ch==y.ch&&x.lv==y.lv&&x.lv<CH[x.ch].length-1){g[b]={ch:x.ch,lv:x.lv+1};g[a]=null;sayH("Birleşti: "+tl(x.ch,x.lv+1))}
+ else if(!y.gen&&x.ch==y.ch&&x.lv==y.lv&&x.lv<CH[x.ch].length-1){g[b]={ch:x.ch,lv:x.lv+1};g[a]=null;snd("match");sayH("Birleşti: "+tl(x.ch,x.lv+1))}
  else if(!y.gen){g[a]=y;g[b]=x}
  drawK()}
 function tap(i){const t=g[i];
@@ -176,7 +189,7 @@ function stg(d,fade){const mi=$("mi"),mr=$("mr"),im=IM[cur];
  (mr.decode?mr.decode():Promise.resolve()).catch(()=>{}).then(()=>requestAnimationFrame(()=>{mr.style.transition="opacity .9s";mr.style.opacity=1}))}
 function openA(i){cur=i;const st=IM[i].length>1;$("mv").className=st?"st":"";
  if(st)stg(S.done[i],false);else{$("mi").src=$("mr").src=IM[i][0];$("mr").style.transition="";$("mr").style.opacity=1}
- $("md").hidden=false;rA()}
+ $("md").hidden=false;rA();save()}
 function rA(){const a=A[cur],d=S.done[cur],L=len(cur),p=d/L;
  if(IM[cur].length<2){for(let k=0;k<4;k++)$("mr").style.setProperty("--r"+k,(d>=L?200:d>k?55:0)+"%");$("gl").style.opacity=d>=L?1:p*.8}
  $("mt").textContent=a.n+(d>=L?" ✅":"");$("mbar").style.width=p*100+"%";
@@ -193,8 +206,28 @@ function doT(k){const c=cost(cur,k),L=len(cur);if(S.done[cur]!=k)return;
  S.coin-=c;S.done[cur]++;const d=S.done[cur];
  if(d>=L)toast(cur<A.length-1?"Bölge tamamlandı! "+A[cur+1].n+" açıldı, yeni müşteriler geldi.":"Tüm bölgeler restore edildi! 🎉");
  drawK();rA();drawM();if(IM[cur].length>1)stg(d,true);burst(A[cur],A[cur].t[k][0],k,d>=L)}
-$("md").onclick=e=>{if(e.target.id=="md"||e.target.classList.contains("x")){$("md").hidden=true;setMap(true)}};
-function show(s){$("sk").hidden=s!="k";$("sh").hidden=s!="h";$("nk").className=s=="k"?"on":"";$("nh").className=s=="h"?"on":"";
+$("md").onclick=e=>{if(e.target.id=="md"||e.target.classList.contains("x")){$("md").hidden=true;setMap(true);save()}};
+function show(s){scr=s;save();$("sk").hidden=s!="k";$("sh").hidden=s!="h";$("nk").className=s=="k"?"on":"";$("nh").className=s=="h"?"on":"";
  if(s=="h"){drawM();const n=S.done.findIndex((d,i)=>d<len(i));setTimeout(()=>go(n<0?0:n),50)}}
+/* ---- Sesler ---- */
+const SN={},snd=(n,l)=>{try{const a=SN[n]||(SN[n]=new Audio("assets/"+n+".mp3"));a.loop=!!l;a.currentTime=0;const p=a.play();if(p&&p.catch)p.catch(()=>{})}catch(e){}},nosnd=n=>{try{SN[n]&&SN[n].pause()}catch(e){}};
+/* ---- Açılış ekranı + günlük ödül çarkı ---- */
+const PZ=[["e",25,"e",10],["c",75,"c",5],["e",100,"e",15],["c",25,"c",10],["e",75,"e",5],["c",100,"c",15],["e",50,"e",20],["c",50,"c",20]];
+const day=()=>{const d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()},pz=(t,n)=>(t=="c"?"🪙":"⚡")+n;
+let started=false,spinning=false;
+function openD(){const w=$("wd"),b=$("drb");$("dr").hidden=false;$("drt").textContent="";b.disabled=false;b.textContent="Ödülü Al";w.style.transition="none";w.style.transform="none"}
+function chkD(){if(started&&$("dr").hidden&&S.dr!=day())openD()}
+function spin(){if(spinning||S.dr==day())return;spinning=true;
+ const k=rnd(8),p=PZ[k],w=$("wd"),b=$("drb");S.dr=day();
+ [[p[0],p[1]],[p[2],p[3]]].forEach(([t,n])=>{if(t=="c")S.coin+=n;else S.en+=n});drawK();
+ w.style.transition="none";w.style.transform="rotate(0deg)";void w.offsetWidth;
+ b.disabled=true;b.textContent="Çark dönüyor…";$("drt").textContent="";snd("cark",true);
+ w.style.transition="transform 5s cubic-bezier(.12,.55,.1,1)";w.style.transform="rotate("+(1800+360-(22.5+45*k)-(rnd(21)-10))+"deg)";
+ setTimeout(()=>{nosnd("cark");snd("reward");spinning=false;$("drt").textContent="Kazandın: "+pz(p[0],p[1])+" + "+pz(p[2],p[3]);b.disabled=false;b.textContent="Yarın yine gel"},5200)}
+$("drb").onclick=()=>{if(S.dr==day()&&!spinning){$("dr").hidden=true;chkD()}else spin()};
+$("spb").onclick=()=>{started=true;$("sp").hidden=true;["cark","reward","match"].forEach(n=>{try{const a=SN[n]||(SN[n]=new Audio("assets/"+n+".mp3"));a.preload="auto";a.load()}catch(e){}});chkD()};
+setInterval(chkD,10000);
+addEventListener("visibilitychange",()=>{if(document.hidden){save();nosnd("cark")}else chkD()});addEventListener("pagehide",save);
 drawK();setMap(false);
+if(scr=="h")show("h");if(S.mo>=0&&S.mo<A.length&&open(S.mo))openA(S.mo);
 </script></body></html>
