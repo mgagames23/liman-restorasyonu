@@ -1,8 +1,8 @@
 {
-  "name": "matchandorder",
+  "name": "match-and-order",
   "version": "1.0.0",
   "private": true,
-  "description": "Match and Order oyunu",
+  "description": "Match and Order - match/merge ve restorasyon oyunu",
   "dependencies": {
     "@capacitor/android": "^8.0.0",
     "@capacitor/cli": "^8.0.0",
