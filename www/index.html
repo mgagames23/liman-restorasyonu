@@ -75,8 +75,8 @@ nav button.on{background:var(--gold);color:#2a1a00}
 #in b.cur{display:inline-block;border-radius:50%;background:#e0a21a55;box-shadow:0 0 0 2px var(--gold)}
 #sp{position:fixed;inset:0;z-index:30;background:#16384a url(assets/oyun.png) center/cover no-repeat;display:flex;align-items:flex-end;justify-content:center;padding-bottom:calc(12% + env(safe-area-inset-bottom,0px))}
 #spb,#drb{font:inherit;font-weight:800;font-size:22px;color:#3a2914;background:var(--gold);border:0;border-radius:30px;padding:12px 44px;box-shadow:0 4px 0 #a8730a,0 8px 18px #0006}
-#dr{position:fixed;inset:0;z-index:20;background:#000c;display:flex;align-items:center;justify-content:center;padding:8px}
-.db{display:flex;flex-direction:column;align-items:center;gap:8px;color:#fff}.db h2{margin:0}
+#dr{position:fixed;inset:0;z-index:20;background:#0b1a2a;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:8px}#dr::before{content:"";position:absolute;inset:-6%;background:url(assets/daily_reward.png) center/cover no-repeat;filter:blur(18px) brightness(.5)}
+.db{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;color:#fff}.db h2{margin:0}
 #wh{position:relative;width:min(94vw,56vh,520px);aspect-ratio:1;background:url(assets/daily_reward.png) center/100% 100% no-repeat;border-radius:18px;overflow:hidden}
 #wd{position:absolute;left:12.918%;top:15.789%;width:73.046%;height:73.046%;border-radius:50%;overflow:hidden}
 #wd .st{position:absolute;width:136.9%;left:-17.686%;top:-21.616%;aspect-ratio:1}
