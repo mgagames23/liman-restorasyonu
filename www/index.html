@@ -84,20 +84,30 @@ nav button.on{background:var(--gold);color:#2a1a00}
 #wd img{width:100%;display:block;pointer-events:none}
 #wd .pt{position:absolute;left:45.614%;top:15.629%;width:8.612%;height:8.134%;background:url(assets/daily_reward.png) 47.9% 88.02%/1161.1% 1229.4% no-repeat;transform:rotate(180deg)}
 #wh .pp{position:absolute;inset:0;background:url(assets/daily_reward.png) center/100% 100% no-repeat;clip-path:polygon(45.93% 15.47%,53.91% 15.47%,50.8% 21.69%,49.92% 23.21%,48.96% 21.69%);pointer-events:none}
-#tg{flex:.45;cursor:pointer}
+#tg,#sl{flex:.45;cursor:pointer}
+#sl{transition:transform .12s,background .12s}#sl.on{box-shadow:0 0 0 2px var(--gold)}#sl.tgt{box-shadow:0 0 0 3px var(--gold)}#sl.hot{background:var(--gold);transform:scale(1.1)}
 #se{position:fixed;inset:0;z-index:15;background:#000b;display:flex;align-items:center;justify-content:center;padding:8px}
 .sb{width:min(100%,420px);background:var(--panel);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px}.sb h2{margin:0;text-align:center}
 .sr{display:flex;justify-content:space-between;font-weight:800}#vs{width:100%;accent-color:var(--gold)}
 #seb{font:inherit;font-weight:800;font-size:18px;color:#3a2914;background:var(--gold);border:0;border-radius:24px;padding:10px}
+#tu{position:fixed;inset:0;z-index:12;pointer-events:none}
+.tp{position:fixed;background:#000a;pointer-events:auto}
+#tr{position:fixed;border:3px solid #ffd24a;border-radius:12px;box-shadow:0 0 12px #ffd24a;pointer-events:none;animation:tpl 1.2s ease-in-out infinite}
+@keyframes tpl{50%{box-shadow:0 0 24px 6px #ffd24a}}
+#tf{position:fixed;left:0;top:0;font-size:34px;line-height:1;pointer-events:none;animation:tfm 1.4s ease-in-out infinite}
+@keyframes tfm{0%,100%{transform:translate(var(--ax,0),var(--ay,0)) scale(1)}55%{transform:translate(var(--bx,0),var(--by,0)) scale(.85)}}
+#tb{position:fixed;max-width:min(86vw,340px);background:var(--panel);color:var(--ink);border-radius:14px;padding:10px 14px;font-weight:800;text-align:center;box-shadow:0 6px 18px #0007;pointer-events:none}
+#tsk{position:fixed;right:10px;top:calc(env(safe-area-inset-top,0px) + 8px);pointer-events:auto;font:inherit;font-weight:800;font-size:14px;background:#000a;color:#fff;border:1px solid #fff6;border-radius:16px;padding:6px 12px}
 #drt{min-height:30px;font-weight:800;font-size:20px;text-align:center}#drb:disabled{opacity:.75}
 </style></head><body><div id="app">
-<div class="top"><div>⚡ <span id="en"></span></div><div>🪙 <span id="co"></span></div><div id="tg" hidden onclick="openS()" role="button" aria-label="Ayarlar">⚙️</div></div>
+<div class="top"><div>⚡ <span id="en"></span></div><div>🪙 <span id="co"></span></div><div id="sl" onclick="sellSel()" role="button" aria-label="Ürün sat">💰</div><div id="tg" hidden onclick="openS()" role="button" aria-label="Ayarlar">⚙️</div></div>
 <div class="scr" id="sk"><div id="or"></div><div id="bd"></div><div id="in">Eşyaları birleştir, müşterilerin siparişini teslim et, jeton kazan.</div></div>
 <div class="scr" id="sh" hidden><div id="chips"></div><div id="mw"><div id="map"><img id="bm" src="assets/map/map.png" width="968" height="1624" alt="Harita"><img id="bx" class="mx" alt=""></div></div></div>
 <nav><button id="nk" class="on" onclick="show('k')">🍳 Mutfak</button><button id="nh" onclick="show('h')">🗺️ Harita</button></nav>
 </div>
 <div id="md" hidden><div class="mb"><div id="mv"><img id="mi" alt=""><div id="gr"></div><img id="mr" alt=""><div id="gl"></div><div id="fx"></div></div><button class="x">✕</button><h2 id="mt"></h2><div class="bar"><i id="mbar"></i></div><div id="tk"></div></div></div>
 <div id="gh" hidden></div><div id="ts" hidden></div>
+<div id="tu" hidden><i class="tp" id="t1"></i><i class="tp" id="t2"></i><i class="tp" id="t3"></i><i class="tp" id="t4"></i><i id="tr"></i><b id="tf">👆</b><div id="tb"></div><button id="tsk">Geç ✕</button></div>
 <div id="se" hidden><div class="sb"><h2>⚙️ Ayarlar</h2><div class="sr"><span>🔊 Ses efektleri</span><span><span id="vl">100</span>%</span></div><input type="range" id="vs" min="0" max="100" step="5" value="100"><button id="seb">Kapat</button></div></div>
 <div id="fn" hidden><button id="fnb">Tekrardan Başla</button></div>
 <div id="sp"><button id="spb">Başlat</button></div>
@@ -117,15 +127,16 @@ const A=[
 {n:"Liman Deposu",x:81.5,y:34.5,z:[[30,60],[25,30],[38,78],[30,38],[20,55],[28,40],[48,62],[68,52],[76,22],[62,28],[70,35],[52,88]],t:["y:Sol odanın zeminini yenile","y:Sol odanın duvarını boya","o:Ara kapıyı ve giriş kapısını yenile","y:Sol odanın raflarını yenile","y:Rafları ahşap sandık ve bakır tellerle doldur","y:Sol odanın avizesini yenile","y:Yenilenmiş varilleri yerleştir","y:Sağ odanın zeminini yenile","y:Sağ odanın duvarlarını boya","y:Sağ odanın raflarını ve eşyalarını yenile","y:Sağ odaya avize as","c:Bina dışındaki eski varilleri kaldır"]},
 {n:"Sera",x:69.5,y:55.5,z:[[45,12],[32,52],[25,48],[30,30],[72,35],[68,50],[48,55],[78,30],[45,30],[48,88]],t:["y:Camları yenile","y:Sol odanın ahşap zeminini yenile","c:Sol odadaki kırık saksıları, kurumuş bitkileri ve bozuk aletleri kaldır","y:Sol odanın raflarını çiçeklendir, çalışma masasını yenile","y:Sağ odanın ahşap saksılarını çiçeklendir","y:Sağ odanın zeminini yenile","o:Sol ve sağ odayı bağlayan kapıyı yenile","c:Sağ odadaki boruyu ve ölü bitkiyi kaldır, duvarları boya","y:Sol ve sağ odaya avize as","c:Bina dışındaki eski saksıları kaldır, giriş basamaklarını yenile"]},
 {n:"Eski Konak",x:39,y:15.5,z:[[45,75],[45,30],[75,72],[55,50],[45,72],[20,60],[52,25],[25,25],[50,38]],t:["y:Alt kattaki karoları değiştir","o:Duvar çatlaklarını onar ve boya","c:Yerdeki tablo ve vazoları kaldır, duvar tablolarını yenile","y:Merdivenleri yenile","c:Kırık sandalye ve sehpaları kaldır, kanepe ve orta sehpayı yenile","y:Kitaplık ve kitapları yenile","y:Avizeyi yenile","y:Üst kattaki kapaklı dolapları yenile","y:Üst kat ahşap zemin ve korkuluklarını yenile"]}];
-let S={coin:60,en:50,done:Array(7).fill(0),g:null};
-try{const s=JSON.parse(localStorage.getItem("hr2"));if(s&&s.done&&s.g)S=s}catch(e){}
+let S={coin:60,en:100,done:Array(7).fill(0),g:null,tut:0};
+try{const s=JSON.parse(localStorage.getItem("hr2"));if(s&&s.done&&s.g){S=s;if(S.tut==null)S.tut=-1}}catch(e){}
 if(!S.g){S.g=Array(C*R).fill(null);S.g[0]={gen:"G1"};S.g[1]={gen:"G2"};S.g[2]={gen:"G3"};S.g[3]={gen:"G4"};S.g[4]={gen:"G5"};S.g[5]={gen:"G6"};[[8,"A",0],[9,"A",0],[10,"B",0],[11,"B",0],[15,"A",1],[16,"B",1]].forEach(([i,c,l])=>S.g[i]={ch:c,lv:l})}
 const g=S.g;let sel=-1,cust=Array.isArray(S.cu)?S.cu.filter(o=>o&&CH[o.ch]&&o.lv<CH[o.ch].length&&FA.includes(o.f)&&o.coin>0).slice(0,4):[],cur=0,scr=S.sc=="h"?"h":"k";
 (function(){g.forEach((t,i)=>{if(t&&(t.gen?!GEN[t.gen]:(!CH[t.ch]||t.lv>=CH[t.ch].length)))g[i]=null});
  Object.keys(GEN).forEach(k=>{if(!g.some(t=>t&&t.gen==k)){let j=g.findIndex(t=>!t);if(j<0)j=g.findIndex(t=>t&&!t.gen);if(j>=0)g[j]={gen:k}}})})();
 const save=()=>{try{S.cu=cust;S.sc=scr;S.mo=$("md").hidden?-1:cur;localStorage.setItem("hr2",JSON.stringify(S))}catch(e){}};
 const len=i=>A[i].t.length,nd=()=>S.done.filter((n,i)=>n>=len(i)).length,open=i=>i==0||S.done[i-1]>=len(i-1);
-const cost=(i,k)=>Math.round((30+20*k)*(1+i*.5)/5)*5;
+const CT=[[25,50,75,100,125,150,175],[50,75,100,125,150,175,200],[50,75,100,125,150,175,200],[50,75,100,125],[50,75,100,125,150,175,200,225,250,275,300,325],[50,75,100,125,150,175,200,225,250,275],[50,75,100,125,150,175,200,225,250]],cost=(i,k)=>CT[i][k];
+const SR=1,RW=1,RT=[5,10,20,40,80,130,200,275],rw=lv=>Math.max(1,Math.round(RT[Math.min(lv,7)]*RW)),sellV=lv=>Math.min(RT[Math.min(lv,7)],Math.max(1,Math.round((1<<lv)*SR)));
 const say=s=>$("in").textContent=s,sayH=s=>$("in").innerHTML=s;
 function toast(s){const t=$("ts");t.textContent=s;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=true,2600)}
 const ic=t=>t.gen?GEN[t.gen].e:CH[t.ch][t.lv];
@@ -137,7 +148,7 @@ const ih=t=>t.gen?pic(GN[t.gen],GEN[t.gen].e):pic(NM[t.ch][t.lv],CH[t.ch][t.lv])
 const tl=(ch,lv)=>pic(NM[ch][lv],CH[ch][lv]);
 /* ---- Mutfak: birleştirme + müşteriler ---- */
 const fc=()=>{const u=cust.map(c=>c.f),r=FA.filter(f=>!u.includes(f));return(r.length?r:FA)[rnd(r.length||4)]};
-function mk(){const n=nd(),K=Object.keys(CH),ch=K[rnd(K.length)],lv=1+rnd(Math.min(2+Math.min(2,n),CH[ch].length-1));return{f:fc(),ch,lv,coin:Math.round((15+lv*20)*(1+.1*n))}}
+function mk(){const n=nd(),K=Object.keys(CH),ch=K[rnd(K.length)],lv=rnd(1+Math.min(CH[ch].length-1,S.tut>=0?2:1+Math.floor(Math.min(S.en,100)*7/100)));return{f:fc(),ch,lv,coin:rw(lv)}}
 function drawK(){
  while(cust.length<4)cust.push(mk());
  $("bd").innerHTML="";
@@ -146,32 +157,38 @@ function drawK(){
   d.dataset.i=i;d.onpointerdown=e=>{drag={i,x:e.clientX,y:e.clientY,on:false};if(t&&!t.gen)$("gh").innerHTML=ih(t)};$("bd").appendChild(d)});
  const orb=$("or"),sl=orb.scrollLeft;orb.innerHTML=cust.map((o,i)=>{const has=g.some(t=>t&&t.ch==o.ch&&t.lv==o.lv);
   return `<div class="o"><div class="fc"><img src="${o.f}" alt=""></div><div class="it">${tl(o.ch,o.lv)}</div>🪙${o.coin}<button class="${has?"ok":""}" onclick="deliver(${i})">${has?"Teslim et":"Eksik"}</button></div>`}).join("");
- orb.scrollLeft=sl;$("en").textContent=S.en;$("co").textContent=S.coin;save()}
+ orb.scrollLeft=sl;$("sl").classList.toggle("on",sel>=0&&!!g[sel]&&!g[sel].gen);$("en").textContent=S.en;$("co").textContent=S.coin;save()}
 function deliver(i){const o=cust[i],k=g.findIndex(t=>t&&t.ch==o.ch&&t.lv==o.lv);
  if(k<0){sayH("Panoda "+tl(o.ch,o.lv)+" yok. Aynı seviyeleri birleştir.");return}
- g[k]=null;snd("order");S.coin+=o.coin;cust.splice(i,1);cust.splice(i,0,mk());say("Sipariş teslim edildi: +"+o.coin+" jeton. Haritada harca!");drawK()}
+ g[k]=null;snd("order");S.coin+=o.coin;cust.splice(i,1);cust.splice(i,0,mk());say("Sipariş teslim edildi: +"+o.coin+" jeton. Haritada harca!");drawK();tut(2)}
 function spawn(i){const f=g.map((x,k)=>x?-1:k).filter(k=>k>=0);
  if(!f.length){say("Hücreler doldu! Yeni ürün eklenemez, birleştirerek yer aç.");toast("Hücreler doldu!");return}
  if(S.en<1){say("Enerjin bitti.");return}
- S.en--;g[f[rnd(f.length)]]={ch:GEN[g[i].gen].ch,lv:rnd(4)?0:1};drawK()}
+ S.en--;g[f[rnd(f.length)]]={ch:GEN[g[i].gen].ch,lv:0};drawK();tut(0)}
 function drop(a,b){if(a==b)return;const x=g[a],y=g[b];if(!x||x.gen)return;
  if(!y){g[b]=x;g[a]=null}
- else if(!y.gen&&x.ch==y.ch&&x.lv==y.lv&&x.lv<CH[x.ch].length-1){g[b]={ch:x.ch,lv:x.lv+1};g[a]=null;snd("match");sayH("Birleşti: "+tl(x.ch,x.lv+1))}
+ else if(!y.gen&&x.ch==y.ch&&x.lv==y.lv&&x.lv<CH[x.ch].length-1){g[b]={ch:x.ch,lv:x.lv+1};g[a]=null;snd("match");tut(1);sayH("Birleşti: "+tl(x.ch,x.lv+1))}
  else if(!y.gen){g[a]=y;g[b]=x}
  drawK()}
+function sell(i){const t=g[i];if(!t||t.gen)return false;
+ if(S.tut>=0){toast("Önce öğreticiyi tamamla");return false}
+ const v=sellV(t.lv);g[i]=null;sel=-1;S.coin+=v;snd("order");sayH("Satıldı: "+tl(t.ch,t.lv)+" +"+v+" jeton");drawK();return true}
+function sellSel(){const t=sel>=0?g[sel]:null;if(t&&!t.gen)sell(sel);else sayH("💰 Ürün sat: bir ürünü seç, sonra 💰'a dokun ya da ürünü 💰'a sürükle.")}
 function tap(i){const t=g[i];
  if(sel>=0&&sel!=i){const s=sel;sel=-1;drop(s,i);return}
  if(!t){sel=-1;drawK();return}
  if(t.gen){sel=-1;spawn(i);return}
- sel=i;sayH(CH[t.ch].map((e,k)=>k==t.lv?"<b class='cur'>"+tl(t.ch,k)+"</b>":tl(t.ch,k)).join("→")+"  ·  seviye "+(t.lv+1)+"/"+CH[t.ch].length);drawK()}
+ sel=i;sayH(CH[t.ch].map((e,k)=>k==t.lv?"<b class='cur'>"+tl(t.ch,k)+"</b>":tl(t.ch,k)).join("→")+"  ·  seviye "+(t.lv+1)+"/"+CH[t.ch].length+"  ·  💰 +"+sellV(t.lv));drawK()}
 let drag=null;
 addEventListener("pointermove",e=>{if(!drag)return;const t=g[drag.i];
  if(!drag.on&&t&&!t.gen&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>8){drag.on=true;$("gh").hidden=false}
- if(drag.on){$("gh").style.left=e.clientX+"px";$("gh").style.top=e.clientY+"px"}});
+ if(drag.on){$("gh").style.left=e.clientX+"px";$("gh").style.top=e.clientY+"px";const q=$("sl").classList;q.add("tgt");q.toggle("hot",!!document.elementFromPoint(e.clientX,e.clientY)?.closest("#sl"))}});
 addEventListener("pointerup",e=>{if(!drag)return;const d=drag;drag=null;$("gh").hidden=true;
- if(d.on){const c=document.elementFromPoint(e.clientX,e.clientY)?.closest(".c");sel=-1;if(c)drop(d.i,+c.dataset.i);else drawK()}else tap(d.i)});
-addEventListener("pointercancel",()=>{drag=null;$("gh").hidden=true});
-setInterval(()=>{if(S.en<50){S.en++;$("en").textContent=S.en;save()}},8000);
+ if(d.on){const u=document.elementFromPoint(e.clientX,e.clientY);$("sl").classList.remove("tgt","hot");if(u?.closest("#sl")){sel=-1;if(!sell(d.i))drawK()}else{const c=u?.closest(".c");sel=-1;if(c)drop(d.i,+c.dataset.i);else drawK()}}else tap(d.i)});
+addEventListener("pointercancel",()=>{drag=null;$("gh").hidden=true;$("sl").classList.remove("tgt","hot")});
+function regen(){const now=Date.now();if(typeof S.et!="number"||S.et>now||S.en>=100){S.et=now;return}
+ const n=Math.floor((now-S.et)/60000);if(n>0){S.en=Math.min(100,S.en+n);S.et=S.en>=100?now:S.et+n*60000;$("en").textContent=S.en;save()}}
+setInterval(regen,1000);
 /* ---- Harita: restorasyon ---- */
 function drawM(){
  $("map").querySelectorAll(".hs").forEach(e=>e.remove());
@@ -197,7 +214,7 @@ function stg(d,fade){const mi=$("mi"),mr=$("mr"),im=IM[cur];
  (mr.decode?mr.decode():Promise.resolve()).catch(()=>{}).then(()=>requestAnimationFrame(()=>{mr.style.transition="opacity .9s";mr.style.opacity=1}))}
 function openA(i){cur=i;const st=IM[i].length>1;$("mv").className=st?"st":"";
  if(st)stg(S.done[i],false);else{$("mi").src=$("mr").src=IM[i][0];$("mr").style.transition="";$("mr").style.opacity=1}
- $("md").hidden=false;rA();save()}
+ $("md").hidden=false;rA();save();tut(4)}
 function rA(){const a=A[cur],d=S.done[cur],L=len(cur),p=d/L;
  if(IM[cur].length<2){for(let k=0;k<4;k++)$("mr").style.setProperty("--r"+k,(d>=L?200:d>k?55:0)+"%");$("gl").style.opacity=d>=L?1:p*.8}
  $("mt").textContent=a.n+(d>=L?" ✅":"");$("mbar").style.width=p*100+"%";
@@ -215,9 +232,9 @@ function doT(k){const c=cost(cur,k),L=len(cur);if(S.done[cur]!=k)return;
  if(d>=L)setTimeout(()=>snd("pass"),900);
  if(allD())setTimeout(showF,1800);
  if(d>=L)toast(cur<A.length-1?"Bölge tamamlandı! "+A[cur+1].n+" açıldı, yeni müşteriler geldi.":"Tüm bölgeler restore edildi! 🎉");
- drawK();rA();drawM();if(IM[cur].length>1)stg(d,true);burst(A[cur],A[cur].t[k][0],k,d>=L)}
+ drawK();rA();drawM();if(IM[cur].length>1)stg(d,true);burst(A[cur],A[cur].t[k][0],k,d>=L);tut(5)}
 $("md").onclick=e=>{if(e.target.id=="md"||e.target.classList.contains("x")){$("md").hidden=true;setMap(true);save()}};
-function show(s){scr=s;save();$("tg").hidden=s!="h";$("sk").hidden=s!="k";$("sh").hidden=s!="h";$("nk").className=s=="k"?"on":"";$("nh").className=s=="h"?"on":"";
+function show(s){scr=s;save();if(s=="h")tut(3);$("tg").hidden=s!="h";$("sl").hidden=s=="h";$("sk").hidden=s!="k";$("sh").hidden=s!="h";$("nk").className=s=="k"?"on":"";$("nh").className=s=="h"?"on":"";
  if(s=="h"){drawM();const n=S.done.findIndex((d,i)=>d<len(i));setTimeout(()=>go(n<0?0:n),50)}}
 /* ---- Sesler ---- */
 const vol=()=>S.vol==null?1:S.vol,SN={},snd=(n,l)=>{try{const a=SN[n]||(SN[n]=new Audio("assets/"+n+".mp3"));a.volume=vol();a.loop=!!l;a.currentTime=0;const p=a.play();if(p&&p.catch)p.catch(()=>{})}catch(e){}},nosnd=n=>{try{SN[n]&&SN[n].pause()}catch(e){}};
@@ -230,25 +247,58 @@ $("se").onclick=e=>{if(e.target.id=="se"||e.target.id=="seb")$("se").hidden=true
 const allD=()=>S.done.every((n,i)=>n>=len(i));
 function showF(){$("fn").hidden=false}
 $("fnb").onclick=()=>{const b=Array(C*R).fill(null);["G1","G2","G3","G4","G5","G6"].forEach((k,i)=>b[i]={gen:k});[[8,"A",0],[9,"A",0],[10,"B",0],[11,"B",0],[15,"A",1],[16,"B",1]].forEach(([i,c,l])=>b[i]={ch:c,lv:l});
- g.splice(0,g.length,...b);S.coin=60;S.en=50;S.done=Array(A.length).fill(0);cust.length=0;sel=-1;cur=0;mapK=0;
+ g.splice(0,g.length,...b);S.coin=60;S.en=100;S.done=Array(A.length).fill(0);cust.length=0;sel=-1;cur=0;mapK=0;
  $("bm").src=MP[0];$("bx").style.transition="none";$("bx").style.opacity=0;$("md").hidden=true;$("fn").hidden=true;drawK();show("k");save()};
 /* ---- Açılış ekranı + günlük ödül çarkı ---- */
 const PZ=[["e",25,"e",10],["c",75,"c",5],["e",100,"e",15],["c",25,"c",10],["e",75,"e",5],["c",100,"c",15],["e",50,"e",20],["c",50,"c",20]];
 const day=()=>{const d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()},pz=(t,n)=>(t=="c"?"🪙":"⚡")+n;
 let started=false,spinning=false;
-function openD(){const w=$("wd"),b=$("drb");$("dr").hidden=false;$("drt").textContent="";b.disabled=false;b.textContent="Ödülü Al";w.style.transition="none";w.style.transform="none"}
+function openD(){const w=$("wd"),b=$("drb");$("dr").hidden=false;$("drt").textContent="Ödüller 2 katı verilir!";b.disabled=false;b.textContent="Ödülü Al";w.style.transition="none";w.style.transform="none"}
 function chkD(){if(started&&$("dr").hidden&&$("fn").hidden&&S.dr!=day())openD()}
 function spin(){if(spinning||S.dr==day())return;spinning=true;
- const k=rnd(8),p=PZ[k],w=$("wd"),b=$("drb");S.dr=day();
+ const k=rnd(8),q=PZ[k],p=[q[0],q[1]*2,q[2],q[3]*2],w=$("wd"),b=$("drb");S.dr=day();
  [[p[0],p[1]],[p[2],p[3]]].forEach(([t,n])=>{if(t=="c")S.coin+=n;else S.en+=n});drawK();
  w.style.transition="none";w.style.transform="rotate(0deg)";void w.offsetWidth;
  b.disabled=true;b.textContent="Çark dönüyor…";$("drt").textContent="";snd("cark",true);
  w.style.transition="transform 5s cubic-bezier(.12,.55,.1,1)";w.style.transform="rotate("+(1800+360-(22.5+45*k)-(rnd(21)-10))+"deg)";
- setTimeout(()=>{nosnd("cark");snd("reward");spinning=false;$("drt").textContent="Kazandın: "+pz(p[0],p[1])+" + "+pz(p[2],p[3]);b.disabled=false;b.textContent="Yarın yine gel"},5200)}
+ setTimeout(()=>{nosnd("cark");snd("reward");spinning=false;$("drt").textContent="Kazandın (x2): "+pz(p[0],p[1])+" + "+pz(p[2],p[3]);b.disabled=false;b.textContent="Yarın yine gel"},5200)}
 $("drb").onclick=()=>{if(S.dr==day()&&!spinning){$("dr").hidden=true;chkD()}else spin()};
 $("spb").onclick=()=>{started=true;$("sp").hidden=true;["cark","reward","match","order","repair","pass"].forEach(n=>{try{const a=SN[n]||(SN[n]=new Audio("assets/"+n+".mp3"));a.preload="auto";a.load()}catch(e){}});if(allD())showF();chkD()};
 setInterval(chkD,10000);
-addEventListener("visibilitychange",()=>{if(document.hidden){save();nosnd("cark")}else chkD()});addEventListener("pagehide",save);
-drawK();setMap(false);
+addEventListener("visibilitychange",()=>{if(document.hidden){save();nosnd("cark")}else{regen();chkD()}});addEventListener("pagehide",save);
+/* ---- Öğretici ---- */
+function tut(n){if(S.tut!==n)return;S.tut=n>=5?-1:n+1;if(S.tut<0){$("tu").hidden=true;toast("Hazırsın! Tüm bölgeleri restore et 🎉")}else tutE();save()}
+function tutE(){const k=S.tut;
+ if(k==2){const has=o=>g.some(t=>t&&!t.gen&&t.ch==o.ch&&t.lv==o.lv);
+  if(!cust[0]||!has(cust[0])){let m=null;g.forEach(t=>{if(t&&!t.gen&&t.lv>=1&&(!m||t.lv>m.lv))m=t});
+   if(!m){tut(2);return}cust[0]=Object.assign(cust[0]||mk(),{ch:m.ch,lv:m.lv,coin:rw(m.lv)})}
+  drawK();$("or").scrollLeft=0}
+ if(k==5&&S.coin<cost(0,0)){S.coin=cost(0,0);drawK()}}
+function tgt(){const k=S.tut,kh=$("sk").hidden,B=$("bd").children,hs=()=>document.querySelector("#map .hs");
+ if(k<=2&&kh)return{e:[$("nk")],t:"Mutfağa dön."};
+ if(k>=4&&!kh)return{e:[$("nh")],t:"Haritaya geç."};
+ if(k==0){const i=g.findIndex(t=>t&&t.gen);return i<0?null:{e:[B[i]],t:"Sepete dokun, ürün çıksın."}}
+ if(k==1){let p=null;g.forEach((t,i)=>{if(p||!t||t.gen||t.lv>=CH[t.ch].length-1)return;const j=g.findIndex((u,m)=>m>i&&u&&!u.gen&&u.ch==t.ch&&u.lv==t.lv);if(j>=0)p=[i,j]});
+  if(!p){tut(1);return null}return{e:[B[p[0]],B[p[1]]],t:"Aynı iki ürünü birleştir: birine dokun, sonra diğerine dokun (ya da sürükle)."}}
+ if(k==2)return{e:[document.querySelector("#or .o button")],t:"Müşterinin istediği ürün panoda var. Teslim et, jeton kazan!"};
+ if(k==3)return{e:[$("nh")],t:"Jetonlarla haritada bölgeleri onaracaksın. Haritaya geç."};
+ if(k==4||(k==5&&$("md").hidden))return{e:[hs()],t:A[0].n+" bölgesine dokun."};
+ if(k==5)return{e:[document.querySelector("#tk button:not([disabled])")],t:"Jeton harcayıp ilk işlemi yap."}}
+function tutPos(){const u=$("tu");
+ if(S.tut<0||!started||!$("dr").hidden||!$("fn").hidden||!$("se").hidden){u.hidden=true;return}
+ const T=tgt();if(!T){u.hidden=true;return}
+ const rs=T.e.filter(Boolean).map(e=>e.getBoundingClientRect()).filter(r=>r.width>0&&r.height>0);
+ if(!rs.length){u.hidden=true;return}
+ const P=6,W=innerWidth,H=innerHeight,x1=Math.round(Math.max(0,Math.min(...rs.map(r=>r.left))-P)),y1=Math.round(Math.max(0,Math.min(...rs.map(r=>r.top))-P)),x2=Math.round(Math.max(...rs.map(r=>r.right))+P),y2=Math.round(Math.max(...rs.map(r=>r.bottom))+P);
+ u.hidden=false;const key=[x1,y1,x2,y2,T.t].join();if(tutPos.k==key)return;tutPos.k=key;
+ const s=(id,l,t,w,h)=>{const st=$(id).style;st.left=l+"px";st.top=t+"px";st.width=Math.max(0,w)+"px";st.height=Math.max(0,h)+"px"};
+ s("t1",0,0,W,y1);s("t2",0,y2,W,H-y2);s("t3",0,y1,x1,y2-y1);s("t4",x2,y1,W-x2,y2-y1);s("tr",x1,y1,x2-x1,y2-y1);
+ const c=rs.map(r=>[(r.left+r.right)/2-14,(r.top+r.bottom)/2-4]),a=c.length>1?c[0]:[c[0][0]+12,c[0][1]+22],b=c.length>1?c[1]:c[0],f=$("tf").style;
+ f.setProperty("--ax",a[0]+"px");f.setProperty("--ay",a[1]+"px");f.setProperty("--bx",b[0]+"px");f.setProperty("--by",b[1]+"px");
+ const tb=$("tb");tb.textContent=T.t;const bw=tb.offsetWidth,bh=tb.offsetHeight;let by=y2+14;if(by+bh>H-8)by=Math.max(8,y1-14-bh);
+ tb.style.left=Math.max(8,Math.min(W-bw-8,(x1+x2)/2-bw/2))+"px";tb.style.top=by+"px"}
+$("tsk").onclick=()=>{S.tut=-1;$("tu").hidden=true;save()};
+setInterval(tutPos,150);
+regen();drawK();setMap(false);
 if(scr=="h")show("h");if(S.mo>=0&&S.mo<A.length&&open(S.mo))openA(S.mo);
 </script></body></html>
