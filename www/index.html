@@ -74,7 +74,8 @@ nav button.on{background:var(--gold);color:#2a1a00}
 #in .tl{width:28px;height:28px;display:inline-block;vertical-align:middle}
 #in b.cur{display:inline-block;border-radius:50%;background:#e0a21a55;box-shadow:0 0 0 2px var(--gold)}
 #sp{position:fixed;inset:0;z-index:30;background:#16384a url(assets/oyun.png) center/cover no-repeat;display:flex;align-items:flex-end;justify-content:center;padding-bottom:calc(12% + env(safe-area-inset-bottom,0px))}
-#spb,#drb{font:inherit;font-weight:800;font-size:22px;color:#3a2914;background:var(--gold);border:0;border-radius:30px;padding:12px 44px;box-shadow:0 4px 0 #a8730a,0 8px 18px #0006}
+#fn{position:fixed;inset:0;z-index:25;background:#16384a url(assets/final.png) center/cover no-repeat;display:flex;align-items:flex-end;justify-content:center;padding-bottom:calc(12% + env(safe-area-inset-bottom,0px))}
+#spb,#drb,#fnb{font:inherit;font-weight:800;font-size:22px;color:#3a2914;background:var(--gold);border:0;border-radius:30px;padding:12px 44px;box-shadow:0 4px 0 #a8730a,0 8px 18px #0006}
 #dr{position:fixed;inset:0;z-index:20;background:#0b1a2a;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:8px}#dr::before{content:"";position:absolute;inset:-6%;background:url(assets/daily_reward.png) center/cover no-repeat;filter:blur(18px) brightness(.5)}
 .db{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;color:#fff}.db h2{margin:0}
 #wh{position:relative;width:min(94vw,56vh,520px);aspect-ratio:1;background:url(assets/daily_reward.png) center/100% 100% no-repeat;border-radius:18px;overflow:hidden}
@@ -83,15 +84,22 @@ nav button.on{background:var(--gold);color:#2a1a00}
 #wd img{width:100%;display:block;pointer-events:none}
 #wd .pt{position:absolute;left:45.614%;top:15.629%;width:8.612%;height:8.134%;background:url(assets/daily_reward.png) 47.9% 88.02%/1161.1% 1229.4% no-repeat;transform:rotate(180deg)}
 #wh .pp{position:absolute;inset:0;background:url(assets/daily_reward.png) center/100% 100% no-repeat;clip-path:polygon(45.93% 15.47%,53.91% 15.47%,50.8% 21.69%,49.92% 23.21%,48.96% 21.69%);pointer-events:none}
+#tg{flex:.45;cursor:pointer}
+#se{position:fixed;inset:0;z-index:15;background:#000b;display:flex;align-items:center;justify-content:center;padding:8px}
+.sb{width:min(100%,420px);background:var(--panel);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px}.sb h2{margin:0;text-align:center}
+.sr{display:flex;justify-content:space-between;font-weight:800}#vs{width:100%;accent-color:var(--gold)}
+#seb{font:inherit;font-weight:800;font-size:18px;color:#3a2914;background:var(--gold);border:0;border-radius:24px;padding:10px}
 #drt{min-height:30px;font-weight:800;font-size:20px;text-align:center}#drb:disabled{opacity:.75}
 </style></head><body><div id="app">
-<div class="top"><div>⚡ <span id="en"></span></div><div>🪙 <span id="co"></span></div></div>
+<div class="top"><div>⚡ <span id="en"></span></div><div>🪙 <span id="co"></span></div><div id="tg" hidden onclick="openS()" role="button" aria-label="Ayarlar">⚙️</div></div>
 <div class="scr" id="sk"><div id="or"></div><div id="bd"></div><div id="in">Eşyaları birleştir, müşterilerin siparişini teslim et, jeton kazan.</div></div>
 <div class="scr" id="sh" hidden><div id="chips"></div><div id="mw"><div id="map"><img id="bm" src="assets/map/map.png" width="968" height="1624" alt="Harita"><img id="bx" class="mx" alt=""></div></div></div>
 <nav><button id="nk" class="on" onclick="show('k')">🍳 Mutfak</button><button id="nh" onclick="show('h')">🗺️ Harita</button></nav>
 </div>
 <div id="md" hidden><div class="mb"><div id="mv"><img id="mi" alt=""><div id="gr"></div><img id="mr" alt=""><div id="gl"></div><div id="fx"></div></div><button class="x">✕</button><h2 id="mt"></h2><div class="bar"><i id="mbar"></i></div><div id="tk"></div></div></div>
 <div id="gh" hidden></div><div id="ts" hidden></div>
+<div id="se" hidden><div class="sb"><h2>⚙️ Ayarlar</h2><div class="sr"><span>🔊 Ses efektleri</span><span><span id="vl">100</span>%</span></div><input type="range" id="vs" min="0" max="100" step="5" value="100"><button id="seb">Kapat</button></div></div>
+<div id="fn" hidden><button id="fnb">Tekrardan Başla</button></div>
 <div id="sp"><button id="spb">Başlat</button></div>
 <div id="dr" hidden><div class="db"><h2>🎁 Günlük Ödül</h2><div id="wh"><div id="wd"><div class="st"><img src="assets/daily_reward.png" alt="" draggable="false"><div class="pt"></div></div></div><div class="pp"></div></div><div id="drt"></div><button id="drb">Ödülü Al</button></div></div>
 <script>
@@ -203,20 +211,33 @@ function burst(a,ty,k,all){const f=$("fx"),s=FX[ty],z=a.z||ZN,[zx,zy]=z[k%z.leng
   f.appendChild(p);setTimeout(()=>p.remove(),1800)}}
 function doT(k){const c=cost(cur,k),L=len(cur);if(S.done[cur]!=k)return;
  if(S.coin<c){toast("Yetersiz jeton. Mutfakta sipariş teslim et.");return}
- S.coin-=c;S.done[cur]++;const d=S.done[cur];
+ S.coin-=c;S.done[cur]++;const d=S.done[cur];snd("repair");
+ if(d>=L)setTimeout(()=>snd("pass"),900);
+ if(allD())setTimeout(showF,1800);
  if(d>=L)toast(cur<A.length-1?"Bölge tamamlandı! "+A[cur+1].n+" açıldı, yeni müşteriler geldi.":"Tüm bölgeler restore edildi! 🎉");
  drawK();rA();drawM();if(IM[cur].length>1)stg(d,true);burst(A[cur],A[cur].t[k][0],k,d>=L)}
 $("md").onclick=e=>{if(e.target.id=="md"||e.target.classList.contains("x")){$("md").hidden=true;setMap(true);save()}};
-function show(s){scr=s;save();$("sk").hidden=s!="k";$("sh").hidden=s!="h";$("nk").className=s=="k"?"on":"";$("nh").className=s=="h"?"on":"";
+function show(s){scr=s;save();$("tg").hidden=s!="h";$("sk").hidden=s!="k";$("sh").hidden=s!="h";$("nk").className=s=="k"?"on":"";$("nh").className=s=="h"?"on":"";
  if(s=="h"){drawM();const n=S.done.findIndex((d,i)=>d<len(i));setTimeout(()=>go(n<0?0:n),50)}}
 /* ---- Sesler ---- */
-const SN={},snd=(n,l)=>{try{const a=SN[n]||(SN[n]=new Audio("assets/"+n+".mp3"));a.loop=!!l;a.currentTime=0;const p=a.play();if(p&&p.catch)p.catch(()=>{})}catch(e){}},nosnd=n=>{try{SN[n]&&SN[n].pause()}catch(e){}};
+const vol=()=>S.vol==null?1:S.vol,SN={},snd=(n,l)=>{try{const a=SN[n]||(SN[n]=new Audio("assets/"+n+".mp3"));a.volume=vol();a.loop=!!l;a.currentTime=0;const p=a.play();if(p&&p.catch)p.catch(()=>{})}catch(e){}},nosnd=n=>{try{SN[n]&&SN[n].pause()}catch(e){}};
+/* ---- Ayarlar (harita ekranı) ---- */
+function openS(){$("vs").value=Math.round(vol()*100);$("vl").textContent=$("vs").value;$("se").hidden=false}
+$("vs").oninput=e=>{S.vol=e.target.value/100;$("vl").textContent=e.target.value;Object.values(SN).forEach(a=>a.volume=S.vol)};
+$("vs").onchange=()=>{save();snd("match")};
+$("se").onclick=e=>{if(e.target.id=="se"||e.target.id=="seb")$("se").hidden=true};
+/* ---- Final + tekrardan başla ---- */
+const allD=()=>S.done.every((n,i)=>n>=len(i));
+function showF(){$("fn").hidden=false}
+$("fnb").onclick=()=>{const b=Array(C*R).fill(null);["G1","G2","G3","G4","G5","G6"].forEach((k,i)=>b[i]={gen:k});[[8,"A",0],[9,"A",0],[10,"B",0],[11,"B",0],[15,"A",1],[16,"B",1]].forEach(([i,c,l])=>b[i]={ch:c,lv:l});
+ g.splice(0,g.length,...b);S.coin=60;S.en=50;S.done=Array(A.length).fill(0);cust.length=0;sel=-1;cur=0;mapK=0;
+ $("bm").src=MP[0];$("bx").style.transition="none";$("bx").style.opacity=0;$("md").hidden=true;$("fn").hidden=true;drawK();show("k");save()};
 /* ---- Açılış ekranı + günlük ödül çarkı ---- */
 const PZ=[["e",25,"e",10],["c",75,"c",5],["e",100,"e",15],["c",25,"c",10],["e",75,"e",5],["c",100,"c",15],["e",50,"e",20],["c",50,"c",20]];
 const day=()=>{const d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()},pz=(t,n)=>(t=="c"?"🪙":"⚡")+n;
 let started=false,spinning=false;
 function openD(){const w=$("wd"),b=$("drb");$("dr").hidden=false;$("drt").textContent="";b.disabled=false;b.textContent="Ödülü Al";w.style.transition="none";w.style.transform="none"}
-function chkD(){if(started&&$("dr").hidden&&S.dr!=day())openD()}
+function chkD(){if(started&&$("dr").hidden&&$("fn").hidden&&S.dr!=day())openD()}
 function spin(){if(spinning||S.dr==day())return;spinning=true;
  const k=rnd(8),p=PZ[k],w=$("wd"),b=$("drb");S.dr=day();
  [[p[0],p[1]],[p[2],p[3]]].forEach(([t,n])=>{if(t=="c")S.coin+=n;else S.en+=n});drawK();
@@ -225,7 +246,7 @@ function spin(){if(spinning||S.dr==day())return;spinning=true;
  w.style.transition="transform 5s cubic-bezier(.12,.55,.1,1)";w.style.transform="rotate("+(1800+360-(22.5+45*k)-(rnd(21)-10))+"deg)";
  setTimeout(()=>{nosnd("cark");snd("reward");spinning=false;$("drt").textContent="Kazandın: "+pz(p[0],p[1])+" + "+pz(p[2],p[3]);b.disabled=false;b.textContent="Yarın yine gel"},5200)}
 $("drb").onclick=()=>{if(S.dr==day()&&!spinning){$("dr").hidden=true;chkD()}else spin()};
-$("spb").onclick=()=>{started=true;$("sp").hidden=true;["cark","reward","match","order"].forEach(n=>{try{const a=SN[n]||(SN[n]=new Audio("assets/"+n+".mp3"));a.preload="auto";a.load()}catch(e){}});chkD()};
+$("spb").onclick=()=>{started=true;$("sp").hidden=true;["cark","reward","match","order","repair","pass"].forEach(n=>{try{const a=SN[n]||(SN[n]=new Audio("assets/"+n+".mp3"));a.preload="auto";a.load()}catch(e){}});if(allD())showF();chkD()};
 setInterval(chkD,10000);
 addEventListener("visibilitychange",()=>{if(document.hidden){save();nosnd("cark")}else chkD()});addEventListener("pagehide",save);
 drawK();setMap(false);
